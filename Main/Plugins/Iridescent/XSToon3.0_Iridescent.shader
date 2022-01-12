@@ -203,8 +203,8 @@ Shader "Xiexe/Toon3/XSToon3_Iridescent"
             #pragma target 5.0
             #pragma vertex vert
             #pragma fragment frag
-            #pragma shader_feature _ALPHABLEND_ON
-            #pragma shader_feature _ALPHATEST_ON
+            #pragma shader_feature_local _ALPHABLEND_ON
+            #pragma shader_feature_local _ALPHATEST_ON
             #pragma multi_compile _ VERTEXLIGHT_ON
             #pragma multi_compile_fog
             #pragma multi_compile_fwdbase
@@ -241,8 +241,8 @@ Shader "Xiexe/Toon3/XSToon3_Iridescent"
             #pragma target 5.0
             #pragma vertex vert
             #pragma fragment frag
-            #pragma shader_feature _ALPHABLEND_ON
-            #pragma shader_feature _ALPHATEST_ON
+            #pragma shader_feature_local _ALPHABLEND_ON
+            #pragma shader_feature_local _ALPHATEST_ON
             #pragma multi_compile_fog
             #pragma multi_compile_fwdadd_fullshadows
             #ifndef UNITY_PASS_FORWARDADD
@@ -273,8 +273,8 @@ Shader "Xiexe/Toon3/XSToon3_Iridescent"
             #pragma target 5.0
             #pragma vertex vert
             #pragma fragment frag
-            #pragma shader_feature _ALPHABLEND_ON
-            #pragma shader_feature _ALPHATEST_ON
+            #pragma shader_feature_local _ALPHABLEND_ON
+            #pragma shader_feature_local _ALPHATEST_ON
             #pragma multi_compile_shadowcaster
             #pragma multi_compile_instancing
             #ifndef UNITY_PASS_SHADOWCASTER
