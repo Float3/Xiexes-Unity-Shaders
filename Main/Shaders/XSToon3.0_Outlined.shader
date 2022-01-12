@@ -297,6 +297,6 @@
             ENDCG
         }
     }
-    Fallback "Diffuse"
+    Fallback "Standard"
     CustomEditor "XSToon3.XSToonInspector"
 }

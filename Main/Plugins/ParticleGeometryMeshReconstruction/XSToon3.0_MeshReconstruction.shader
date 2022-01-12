@@ -298,6 +298,6 @@ Shader "Xiexe/Toon3/XSToon3_MeshReconstruction"
             ENDCG
         }
     }
-    Fallback "Diffuse"
+    Fallback "Standard"
     CustomEditor "XSToon3.XSToonParticleGeometryMeshReconstructionInspector"
 }
