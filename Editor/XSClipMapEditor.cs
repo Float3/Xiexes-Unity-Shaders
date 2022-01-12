@@ -64,7 +64,7 @@ namespace XSToon3
             ClipScrollPos = EditorGUILayout.BeginScrollView(ClipScrollPos);
             for (int i = 0; i < ClipMapCount; i++)
             {
-                ClipMaps[i] = (Texture2D)EditorGUILayout.ObjectField($"Clip Map {i}:", ClipMaps[i], typeof(Texture2D));
+                ClipMaps[i] = (Texture2D)EditorGUILayout.ObjectField($"Clip Map {i}:", ClipMaps[i], typeof(Texture2D), false);
             }
             EditorGUILayout.EndScrollView();
             XSStyles.SeparatorThin();
