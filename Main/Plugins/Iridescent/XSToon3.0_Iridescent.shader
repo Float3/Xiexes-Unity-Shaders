@@ -1,4 +1,4 @@
-﻿Shader "Xiexe/Toon3/XSToon3_Iridescent"
+Shader "Xiexe/Toon3/XSToon3_Iridescent"
 {
     Properties
     {
@@ -213,6 +213,7 @@
             #ifndef UNITY_PASS_FORWARDBASE
                 #define UNITY_PASS_FORWARDBASE
             #endif
+	        #pragma skip_variants DYNAMICLIGHTMAP_ON LIGHTMAP_ON LIGHTMAP_SHADOW_MIXING DIRLIGHTMAP_COMBINED SHADOWS_SHADOWMASK
 
             #include "../../CGIncludes/AudioLink.cginc"
             #include "../../CGIncludes/XSDefines.cginc"
@@ -247,6 +248,7 @@
             #ifndef UNITY_PASS_FORWARDADD
                  #define UNITY_PASS_FORWARDADD
             #endif
+	        #pragma skip_variants DYNAMICLIGHTMAP_ON LIGHTMAP_ON LIGHTMAP_SHADOW_MIXING DIRLIGHTMAP_COMBINED SHADOWS_SHADOWMASK
 
             #include "../../CGIncludes/AudioLink.cginc"
             #include "../../CGIncludes/XSDefines.cginc"
@@ -278,7 +280,7 @@
             #ifndef UNITY_PASS_SHADOWCASTER
                 #define UNITY_PASS_SHADOWCASTER
             #endif
-            #pragma skip_variants FOG_LINEAR FOG_EXP FOG_EXP2
+            #pragma skip_variants FOG_LINEAR FOG_EXP FOG_EXP2 DYNAMICLIGHTMAP_ON LIGHTMAP_ON LIGHTMAP_SHADOW_MIXING DIRLIGHTMAP_COMBINED SHADOWS_SHADOWMASK
 
             #include "../../CGIncludes/AudioLink.cginc"
             #include "../../CGIncludes/XSDefines.cginc"
