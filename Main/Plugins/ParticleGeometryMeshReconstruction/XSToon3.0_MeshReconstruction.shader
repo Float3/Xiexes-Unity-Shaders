@@ -141,6 +141,7 @@ Shader "Xiexe/Toon3/XSToon3_MeshReconstruction"
         _WireColor("Wire Color", Color) = (0,0,0,0)
         _WireWidth("Wire Width", Float) = 0
         [HideInInspector][Enum(Basic, 0, Advanced, 1)]_AdvMode("Shader Mode", Int) = 0
+        [HideInInspector][Enum(XSToon3.VRCFallbackTags)]_VRCFallbackTag("VRC Fallback Tag", Int) = 0
         [IntRange] _Stencil ("Stencil ID [0;255]", Range(0,255)) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _StencilComp ("Stencil Comparison", Int) = 0
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilOp ("Stencil Operation", Int) = 0
@@ -180,7 +181,7 @@ Shader "Xiexe/Toon3/XSToon3_MeshReconstruction"
 
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue"="Geometry" }
+        Tags { "RenderType"="Opaque" "Queue"="Geometry" "VRCFallback"="Toon" }
         Cull [_Culling]
         AlphaToMask [_AlphaToMask]
         Stencil

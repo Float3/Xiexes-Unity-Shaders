@@ -18,8 +18,7 @@
 	}
 	SubShader
 	{
-		Tags { "RenderType"="" "Queue" = "Geometry-1" }
-		LOD 100
+		Tags { "RenderType"="" "Queue" = "Geometry-1" "VRCFallback" = "Hidden" }
 
 		Cull [_Culling]
 		Blend [_srcblend] [_dstblend]

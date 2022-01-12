@@ -27,6 +27,29 @@ namespace XSToon3
         public bool ShowFur = false;
     }
 
+    //https://docs.vrchat.com/docs/shader-fallback-system
+    public enum VRCFallbackTags
+    {
+        Toon = 0,
+        Standard = 1, //Standard exists even though the docs don't list it 😠
+        Matcap = 2,
+        Hidden = 3,
+
+        //MobileToon = 4,
+        //VertexLit = 5,
+        
+        //why would you want to fallback to these?
+        //Unlit = 6,
+        //Particle = 7,
+        //Sprite = 8,            
+        
+        //Modifiers:
+        //DoubleSided
+        //Transparent,
+        //Cutout,
+        //Fade,
+    }
+
     public class XSToonInspector : ShaderGUI
     {
         protected static Dictionary<Material, FoldoutToggles> Foldouts = new Dictionary<Material, FoldoutToggles>();
@@ -137,6 +160,7 @@ namespace XSToon3
         protected MaterialProperty _OutlineUVSelect = null;
         protected MaterialProperty _ShadowSharpness = null;
         protected MaterialProperty _AdvMode = null;
+        protected MaterialProperty _VRCFallbackTag = null;
         protected MaterialProperty _ClipMap = null;
         protected MaterialProperty _ClipAgainstVertexColorGreaterZeroFive = null;
         protected MaterialProperty _ClipAgainstVertexColorLessZeroFive = null;
@@ -222,6 +246,7 @@ namespace XSToon3
 
         private static bool OverrideRenderSettings = false;
         protected static int BlendMode;
+        protected static int CullingMode;
         protected bool isPatreonShader = false;
         protected bool isEyeTracking = false;
         protected bool isFurShader = false;
@@ -231,12 +256,15 @@ namespace XSToon3
         protected bool isDithered = false;
         protected bool isA2C = false;
 
+        private static VRCFallbackTags VRCFallbackTag;
         public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
         {
             Material material = materialEditor.target as Material;
             Shader shader = material.shader;
 
             BlendMode = material.GetInt("_BlendMode");
+            CullingMode = material.GetInt("_Culling");
+            VRCFallbackTag = (VRCFallbackTags)material.GetInt("_VRCFallbackTag");
             isCutout = BlendMode == 1;
             isDithered = BlendMode == 2;
             isA2C = BlendMode == 3;
@@ -260,6 +288,7 @@ namespace XSToon3
             EditorGUI.BeginChangeCheck();
             XSStyles.ShurikenHeaderCentered("XSToon v" + XSStyles.ver);
             materialEditor.ShaderProperty(_AdvMode, new GUIContent("Shader Mode", "Setting this to 'Advanced' will give you access to things such as stenciling, and other expiremental/advanced features."));
+            materialEditor.ShaderProperty(_VRCFallbackTag, new GUIContent("VRC Fallback Tag", "This determiens what shader this material will fallback to when a user has Shaders blocked."));
             materialEditor.ShaderProperty(_Culling, new GUIContent("Culling Mode", "Changes the culling mode. 'Off' will result in a two sided material, while 'Front' and 'Back' will cull those sides respectively"));
             materialEditor.ShaderProperty(_TilingMode, new GUIContent("Tiling Mode", "Setting this to Merged will tile and offset all textures based on the Main texture's Tiling/Offset."));
             materialEditor.ShaderProperty(_BlendMode, new GUIContent("Blend Mode", "Blend mode of the material. (Opaque, transparent, cutout, etc.)"));
@@ -325,6 +354,7 @@ namespace XSToon3
                         (int) UnityEngine.Rendering.RenderQueue.Geometry, 1, 0);
                     material.DisableKeyword("_ALPHABLEND_ON");
                     material.DisableKeyword("_ALPHATEST_ON");
+                    DoVRCFallBack(material,"");
                     break;
 
                 case 1: //Cutout
@@ -333,6 +363,7 @@ namespace XSToon3
                         (int) UnityEngine.Rendering.RenderQueue.AlphaTest, 1, 0);
                     material.DisableKeyword("_ALPHABLEND_ON");
                     material.EnableKeyword("_ALPHATEST_ON");
+                    DoVRCFallBack(material,"Cutout");
                     break;
 
                 case 2: //Dithered
@@ -341,6 +372,7 @@ namespace XSToon3
                         (int) UnityEngine.Rendering.RenderQueue.AlphaTest, 1, 0);
                     material.DisableKeyword("_ALPHABLEND_ON");
                     material.EnableKeyword("_ALPHATEST_ON");
+                    DoVRCFallBack(material,"Cutout");
                     break;
 
                 case 3: //Alpha To Coverage
@@ -349,6 +381,7 @@ namespace XSToon3
                         (int) UnityEngine.Rendering.RenderQueue.AlphaTest, 1, 1);
                     material.EnableKeyword("_ALPHABLEND_ON");
                     material.EnableKeyword("_ALPHATEST_ON");
+                    DoVRCFallBack(material,"Cutout");
                     break;
 
                 case 4: //Transparent
@@ -357,6 +390,7 @@ namespace XSToon3
                         (int) UnityEngine.Rendering.RenderQueue.Transparent, 0, 0);
                     material.EnableKeyword("_ALPHABLEND_ON");
                     material.DisableKeyword("_ALPHATEST_ON");
+                    DoVRCFallBack(material,"Transparent");
                     break;
 
                 case 5: //Fade
@@ -365,6 +399,7 @@ namespace XSToon3
                         (int) UnityEngine.Rendering.RenderQueue.Transparent, 0, 0);
                     material.EnableKeyword("_ALPHABLEND_ON");
                     material.DisableKeyword("_ALPHATEST_ON");
+                    DoVRCFallBack(material,"Fade");
                     break;
 
                 case 6: //Additive
@@ -373,8 +408,16 @@ namespace XSToon3
                         (int) UnityEngine.Rendering.RenderQueue.Transparent, 0, 0);
                     material.DisableKeyword("_ALPHABLEND_ON");
                     material.DisableKeyword("_ALPHATEST_ON");
+                    DoVRCFallBack(material,"Transparent"); //Transparent or Fade? :p
                     break;
             }
+        }
+
+        private void DoVRCFallBack(Material material, string mode)
+        {
+            string tag = VRCFallbackTag + mode;
+            if (CullingMode == 0) tag += "DoubleSided";
+            material.SetOverrideTag("VRCFallback",tag);
         }
 
         private void SetBlend(Material material, int src, int dst, int renderQueue, int zwrite, int alphatocoverage)
